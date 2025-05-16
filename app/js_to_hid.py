@@ -17,6 +17,7 @@ class JavaScriptKeyEvent:
     ctrl_modifier: bool
     key: str
     key_code: int
+    event_type: str = 'keydown'  # デフォルト値を'keydown'に設定
 
 
 # JS keycodes source: https://github.com/wesbos/keycodes
