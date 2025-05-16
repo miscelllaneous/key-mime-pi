@@ -31,12 +31,15 @@ hid_path = os.environ.get('HID_PATH', '/dev/hidg0')
 
 
 def _parse_key_event(payload):
-    return js_to_hid.JavaScriptKeyEvent(meta_modifier=payload['metaKey'],
-                                        alt_modifier=payload['altKey'],
-                                        shift_modifier=payload['shiftKey'],
-                                        ctrl_modifier=payload['ctrlKey'],
-                                        key=payload['key'],
-                                        key_code=payload['keyCode'])
+    return js_to_hid.JavaScriptKeyEvent(
+        meta_modifier=payload['metaKey'],
+        alt_modifier=payload['altKey'],
+        shift_modifier=payload['shiftKey'],
+        ctrl_modifier=payload['ctrlKey'],
+        key=payload['key'],
+        key_code=payload['keyCode'],
+        event_type=payload.get('type', 'keydown')
+    )
 
 
 @socketio.on('keystroke')
@@ -53,6 +56,8 @@ def socket_keystroke(message):
         logger.info('Ignoring %s key (keycode=%d)', key_event.key,
                     key_event.key_code)
     else:
+        if key_event.event_type == 'keyup':
+            hid_keycode = 0
         hid.send(hid_path, control_keys, hid_keycode)
         success = True
 
