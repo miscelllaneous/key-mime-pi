@@ -94,14 +94,14 @@ _JS_TO_HID_KEYCODES = {
     88: 0x1b,  # x
     89: 0x1c,  # y
     90: 0x1d,  # z
-    91: 0xe3,  # Windows key / Meta Key (Left)
+    91: 0xe0,  # Windows key / Meta Key (Left) -> Ctrl key
     96: 0x62,  # Numpad 0
     97: 0x59,  # Numpad 1
     98: 0x5a,  # Numpad 2
     99: 0x5b,  # Numpad 3
     100: 0x5c,  # Numpad 4
     101: 0x5d,  # Numpad 5
-    102: 0x5e,  # Numpad 6
+    102: 0x35,  # Eisu key -> Backtick (`)
     103: 0x5f,  # Numpad 7
     104: 0x60,  # Numpad 8
     105: 0x61,  # Numpad 9
@@ -158,6 +158,11 @@ def convert(js_key_event):
     ]):
         if pressed:
             control_chars |= 1 << i
+    
+    # 英数キーの場合、Altキーを強制的に有効にする
+    if js_key_event.key_code == 102:  # Eisu key
+        control_chars |= 1 << 2  # Altキーを有効にする（2はAltキーの位置）
+    
     try:
         return control_chars, _JS_TO_HID_KEYCODES[js_key_event.key_code]
     except KeyError:
