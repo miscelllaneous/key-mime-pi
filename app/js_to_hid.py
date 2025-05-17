@@ -159,9 +159,10 @@ def convert(js_key_event):
         if pressed:
             control_chars |= 1 << i
     
-    # 英数キーの場合、Altキーを強制的に有効にする
-    if js_key_event.key_code == 223:
-        control_chars |= 1 << 18
+    # ｀キーを押したときは Alt+` として送信したいので Alt ビット (左 Alt = 1<<2) を強制的に有効にする。
+    # US 配列の ` (keyCode=192) と JIS 配列の ` (keyCode=223) の双方を対象とする。
+    if js_key_event.key_code in (192, 223):
+        control_chars |= 1 << 2
     
     try:
         return control_chars, _JS_TO_HID_KEYCODES[js_key_event.key_code]
